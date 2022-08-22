@@ -20,16 +20,14 @@
 
 int main(int argc, char** argv)
 {
-	if (argc < 2)
-		km::error_exit("No files selected");
+	if (argc != 2)
+		km::error_exit("Check your arguments");
 
 	// parse files
-	for (int i = 1; i < argc; ++i) {
-		try {
-			km::Json json(argv[i]);
-		}
-		catch (const std::exception& e) {
-			std::cerr << e.what() << std::endl;
-		}
+	try {
+		km::Json json(argv[1]);
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
 	}
 }
