@@ -28,7 +28,6 @@ namespace km {
 // Json //
 //////////
 
-
 // Constructors
 
 	Json::Json(const char* file_name)
@@ -53,9 +52,9 @@ namespace km {
 
 // Funky Members
 	
-	const Object& Json::parse()
+	const Json::Object& Json::parse()
 	{
-		json_obj = Object(src);
+		json_obj = Json::Object(src);
 		return (json_obj);
 	}
 
@@ -65,16 +64,16 @@ namespace km {
 
 // Constructors
 
-	Object::Object(const char* &src)
+	Json::Object::Object(const char* &src)
 	{
 		(void)src;
 	}
 
-	Object::Object(const Object& x) {
+	Json::Object::Object(const Json::Object& x) {
 		*this = x;
 	}
 
-	Object& Object::operator = (const Object& x) {
+	Json::Object& Json::Object::operator = (const Json::Object& x) {
 		this->value_type = x.value_type;
 		this->value = x.value;
 		return (*this);

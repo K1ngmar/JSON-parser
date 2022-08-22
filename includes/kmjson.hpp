@@ -28,62 +28,63 @@ namespace km {
 
 	void error_exit(const std::string& error, int error_code = 1);
 
-///////////
-// Types //
-///////////
-
-	struct Object {
-
-	//////////////
-	// Typedefs //
-	//////////////
-	public:
-
-		typedef std::unordered_map<std::string_view, Object>				obj_type;
-		typedef std::vector<Object>											arr_type;
-		typedef std::string_view											str_type;
-		typedef std::variant<obj_type, arr_type, int32_t, str_type, bool>	val;
-
-	///////////
-	// types //
-	///////////
-	public:
-
-		enum class valuetype {
-			Object,
-			Array,
-			Number,
-			String,
-			Bool,
-			Null
-		};
-
-	//////////////////////
-	// member variables //
-	//////////////////////
-	public:
-
-		enum valuetype	value_type;
-		val				value;
-
-	//////////////////
-	// constructors //
-	//////////////////
-	public:
-
-		Object() = default;
-		Object(const char* &src);
-
-		Object(const Object& x);
-		Object& operator = (const Object& x);
-
-	};
-
 //////////
 // Json //
 //////////
 	
 	class Json {
+
+	////////////
+	// Object //
+	////////////
+	private:
+		
+		struct Object {
+
+		//////////////
+		// Typedefs //
+		//////////////
+		public:
+
+			typedef std::unordered_map<std::string_view, Object>				obj_type;
+			typedef std::vector<Object>											arr_type;
+			typedef std::string_view											str_type;
+			typedef std::variant<obj_type, arr_type, int32_t, str_type, bool>	val;
+
+		///////////
+		// types //
+		///////////
+		public:
+
+			enum class valuetype {
+				Object,
+				Array,
+				Number,
+				String,
+				Bool,
+				Null
+			};
+
+		//////////////////////
+		// member variables //
+		//////////////////////
+		public:
+
+			enum valuetype	value_type;
+			val				value;
+
+		//////////////////
+		// constructors //
+		//////////////////
+		public:
+
+			Object() = default;
+			Object(const char* &src);
+
+			Object(const Object& x);
+			Object& operator = (const Object& x);
+
+		}; /* end of object */
 
 	//////////////////////
 	// Member variables //
