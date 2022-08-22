@@ -28,6 +28,9 @@ namespace km {
 // Json //
 //////////
 
+
+// Constructors
+
 	Json::Json(const char* file_name)
 	{
 		struct stat data;
@@ -44,8 +47,37 @@ namespace km {
 
 	Json::~Json() noexcept(false)
 	{
-		if (munmap(src, len) < 0)
+		if (munmap((void*)src, len) < 0)
 			throw std::runtime_error("unmapping failed somehow lmao imagine that");
+	}
+
+// Funky Members
+	
+	const Object& Json::parse()
+	{
+		json_obj = Object(src);
+		return (json_obj);
+	}
+
+////////////
+// Object //
+////////////
+
+// Constructors
+
+	Object::Object(const char* &src)
+	{
+		(void)src;
+	}
+
+	Object::Object(const Object& x) {
+		*this = x;
+	}
+
+	Object& Object::operator = (const Object& x) {
+		this->value_type = x.value_type;
+		this->value = x.value;
+		return (*this);
 	}
 
 } /* end of namespace */

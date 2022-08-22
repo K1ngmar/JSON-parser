@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <variant>
 
 namespace km {
 
@@ -38,7 +39,10 @@ namespace km {
 	//////////////
 	public:
 
-		typedef std::unordered_map<std::string_view, Object>	map_type;
+		typedef std::unordered_map<std::string_view, Object>				obj_type;
+		typedef std::vector<Object>											arr_type;
+		typedef std::string_view											str_type;
+		typedef std::variant<obj_type, arr_type, int32_t, str_type, bool>	val;
 
 	///////////
 	// types //
@@ -54,20 +58,24 @@ namespace km {
 			Null
 		};
 
-		union val {
-			map_type			obj;
-			std::vector<Object>	arr;
-			int32_t				nbr;
-			std::string_view	str;
-			bool				bln;
-		};
-
 	//////////////////////
 	// member variables //
 	//////////////////////
 	public:
 
-		enum valuetype value;
+		enum valuetype	value_type;
+		val				value;
+
+	//////////////////
+	// constructors //
+	//////////////////
+	public:
+
+		Object() = default;
+		Object(const char* &src);
+
+		Object(const Object& x);
+		Object& operator = (const Object& x);
 
 	};
 
@@ -82,18 +90,29 @@ namespace km {
 	//////////////////////
 	private: 
 
-		char*		src;
+		const char* src;
 		off_t		len;
+		Object		json_obj;
 		// std::string output;
-		// Object		json_obj;
 
 	////////////////////
 	// Roadwork ahead //
 	////////////////////
+	private:
+
+		Json();
+
 	public:
 
 		Json(const char* file);
 		~Json() noexcept(false);
+
+	///////////////////
+	// Funky members //
+	///////////////////
+	public:
+
+		const Object& parse();
 
 	};
 
