@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <exception>
 #include <iostream>
 #include <stack>
@@ -43,6 +44,7 @@ namespace km {
 		_src = (char*)mmap(NULL, _len, PROT_READ, MAP_PRIVATE, fd, 0);
 		if (_src == MAP_FAILED)
 			throw std::runtime_error("Mapping file failed :/ unlucky");
+		close(fd);
 	}
 
 	Json::~Json() noexcept(false)
