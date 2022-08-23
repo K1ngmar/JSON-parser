@@ -21,7 +21,7 @@ endif
 
 ifdef FSANITIZE
 	CFLAGS += -D FSANITIZE
-	CFLAGS = -g -fsanitize=address
+	CFLAGS += -g -fsanitize=address
 endif
 
 include ./make_settings/src_files.mk
