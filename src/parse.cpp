@@ -54,29 +54,8 @@ namespace km {
 	
 	const Json::Object& Json::parse()
 	{
-		json_obj = Json::Object(src);
+		json_obj = Json::Object();
 		return (json_obj);
-	}
-
-////////////
-// Object //
-////////////
-
-// Constructors
-
-	Json::Object::Object(const char* &src)
-	{
-		(void)src;
-	}
-
-	Json::Object::Object(const Json::Object& x) {
-		*this = x;
-	}
-
-	Json::Object& Json::Object::operator = (const Json::Object& x) {
-		this->value_type = x.value_type;
-		this->value = x.value;
-		return (*this);
 	}
 
 } /* end of namespace */

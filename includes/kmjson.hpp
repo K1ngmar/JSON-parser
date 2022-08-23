@@ -73,17 +73,6 @@ namespace km {
 			enum valuetype	value_type;
 			val				value;
 
-		//////////////////
-		// constructors //
-		//////////////////
-		public:
-
-			Object() = default;
-			Object(const char* &src);
-
-			Object(const Object& x);
-			Object& operator = (const Object& x);
-
 		}; /* end of object */
 
 	//////////////////////
