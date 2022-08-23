@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <exception>
 #include <iostream>
+#include <stack>
 
 namespace km {
 
@@ -38,15 +39,15 @@ namespace km {
 		if (fstat(fd, &data) < 0)
 			throw std::runtime_error("file no workie");
 
-		len = data.st_size;
-		src = (char*)mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
-		if (src == MAP_FAILED)
+		_len = data.st_size;
+		_src = (char*)mmap(NULL, _len, PROT_READ, MAP_PRIVATE, fd, 0);
+		if (_src == MAP_FAILED)
 			throw std::runtime_error("Mapping file failed :/ unlucky");
 	}
 
 	Json::~Json() noexcept(false)
 	{
-		if (munmap((void*)src, len) < 0)
+		if (munmap((void*)_src, _len) < 0)
 			throw std::runtime_error("unmapping failed somehow lmao imagine that");
 	}
 
@@ -54,8 +55,14 @@ namespace km {
 	
 	const Json::Object& Json::parse()
 	{
-		json_obj = Json::Object();
-		return (json_obj);
+		std::stack<Json::Object*> stack;
+		_json_obj = Json::Object();
+
+		for (off_t i = 0; i < _len; ++i) {
+
+		}
+
+		return (_json_obj);
 	}
 
 } /* end of namespace */

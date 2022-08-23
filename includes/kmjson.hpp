@@ -80,9 +80,9 @@ namespace km {
 	//////////////////////
 	private: 
 
-		const char* src;
-		off_t		len;
-		Object		json_obj;
+		const char* _src;
+		off_t		_len;
+		Object		_json_obj;
 		// std::string output;
 
 	////////////////////
