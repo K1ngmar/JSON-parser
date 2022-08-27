@@ -110,14 +110,16 @@ namespace km {
 			auto& new_val = std::get<Object::obj_type>(obj.value);
 			_parse_dispatch(new_val[name], ++i);
 
-			_skip_ws(++i);
+			_skip_ws(i);
 			if (i >= _len)
 				throw std::runtime_error("attribute has no value");
 			
 			switch(_src[i]) {
 				case ',':
+					++i;
 					continue ;
 				case '}':
+					++i;
 					return ;
 				default:
 					throw std::runtime_error(std::string("Uknown character found: `") + _src[i] + '`');
@@ -140,5 +142,34 @@ namespace km {
 		_parse_dispatch(_json_obj, i);
 		return (_json_obj);
 	}
+
+///////////////
+// Stringify //
+///////////////
+
+	// void Json::_stringify(const Json::Object& obj, size_t depth)
+	// {
+	// 	switch (obj.value_type) {
+	// 		case Json::Object::valuetype::Object: {
+	// 			output.append("{\n"); break ;
+	// 		}
+	// 		case Json::Object::valuetype::String: {
+	// 			output.append(std::get<std::string_view>(obj.value));
+	// 		}
+	// 		default:
+	// 			throw std::runtime_error("unknown object type");
+	// 	}
+	// 	for (size_t i = 0; i < depth; ++i)
+	// 		output.push_back('\t');
+	// }
+
+	// const std::string& Json::stringify(const Json::Object& obj)
+	// {
+	// 	output.reserve(_len);
+
+	// 	_stringify(obj, 0);
+
+	// 	return (output);
+	// }
 
 } /* end of namespace */
