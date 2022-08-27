@@ -37,7 +37,7 @@ namespace km {
 	////////////
 	// Object //
 	////////////
-	private:
+	public:
 		
 		struct Object {
 
@@ -81,7 +81,7 @@ namespace km {
 	private: 
 
 		const char* _src;
-		off_t		_len;
+		size_t		_len;
 		Object		_json_obj;
 		// std::string output;
 
@@ -97,9 +97,17 @@ namespace km {
 		Json(const char* file);
 		~Json() noexcept(false);
 
-	///////////////////
-	// Funky members //
-	///////////////////
+	/////////////
+	// Parsing //
+	/////////////
+	private:
+
+		std::string_view	_parse_name(size_t& i);
+		void				_skip_ws(size_t& i);
+		void				_parse_dispatch(Object& obj, size_t& i);
+		void				_parse_object(Object& obj, size_t& i);
+		void				_parse_string(Object& obj, size_t& i);
+
 	public:
 
 		const Object& parse();
