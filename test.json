@@ -16,5 +16,6 @@
 		"another": "one",
 		"dj": "khaled"
 	},
-	"empty": {}
+	"empty": {},
+	"empty_arr": []
 }

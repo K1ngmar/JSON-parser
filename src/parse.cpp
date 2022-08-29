@@ -136,15 +136,15 @@ namespace km {
 		obj.value = Object::arr_type();
 		Object::arr_type& array = std::get<Object::arr_type>(obj.value);
 
-		while (i < _len) {
-			_skip_ws(i);
+		_skip_ws(i);
+		while (i < _len && _src[i] != ']') {
 			array.push_back(Object());
 			_parse_dispatch(array.back(), i);
+			_skip_ws(i);
 			if (_src[i] != ',')
 				break ;
 			++i;
 		}
-		_skip_ws(i);
 		++i;
 	}
 
