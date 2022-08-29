@@ -146,6 +146,53 @@ namespace km {
 // Stringify //
 ///////////////
 
-	
+void Json::_stringify_object(const Json::Object& obj, size_t depth)
+	{
+		output.append("{\n");
+		auto& values = std::get<Json::Object::obj_type>(obj.value);
+		auto itr = values.begin();
+		while (itr != values.end()) {
+			// set depth padding
+			output.insert(output.end(), depth, '\t');
+
+			// object name
+			output.append(itr->first);
+			output.append(": ");
+
+			// opbject
+			_stringify(itr->second, depth);
+			if (++itr == values.end())
+				break ;
+			output.append(",\n");
+		}
+		output.push_back('\n');
+		output.insert(output.end(), depth - 1, '\t');
+		output.append("}\n");
+	}
+
+	void Json::_stringify(const Json::Object& obj, size_t depth)
+	{
+		switch (obj.value_type) {
+			case Json::Object::valuetype::Object: {
+				_stringify_object(obj, depth + 1);
+				break ;
+			}
+			case Json::Object::valuetype::String: {
+				output.append(std::get<std::string_view>(obj.value));
+				break ;
+			}
+			default:
+				throw std::runtime_error("unknown object type");
+		}
+	}
+
+	const std::string& Json::stringify(const Json::Object& obj)
+	{
+		output.reserve(_len);
+
+		_stringify(obj, 0);
+
+		return (output);
+	}
 
 } /* end of namespace */

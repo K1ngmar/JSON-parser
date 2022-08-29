@@ -83,7 +83,7 @@ namespace km {
 		const char* _src;
 		size_t		_len;
 		Object		_json_obj;
-		// std::string output;
+		std::string output;
 
 	////////////////////
 	// Roadwork ahead //
@@ -110,7 +110,19 @@ namespace km {
 
 	public:
 
-		const Object& parse();
+		Object& parse();
+
+	///////////////
+	// Stringify //
+	///////////////
+	private:
+
+		void _stringify_object(const Object& obj, size_t depth);
+		void _stringify(const Object& obj, size_t depth);
+
+	public:
+
+		const std::string&	stringify(const Object& obj);
 
 	};
 

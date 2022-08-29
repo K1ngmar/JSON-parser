@@ -26,7 +26,8 @@ int main(int argc, char** argv)
 	// parse files
 	try {
 		km::Json json(argv[1]);
-		json.parse();
+		km::Json::Object& json_obj = json.parse();
+		std::cout << json.stringify(json_obj) << std::endl;
 	}
 	catch (const std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
