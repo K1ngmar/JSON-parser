@@ -101,9 +101,9 @@ namespace km {
 
 		while (true) {
 			std::string_view name = _parse_name(i);
-			_skip_ws(++i);
 
 			if (name.size() > 0) {
+				_skip_ws(++i);
 
 				if (_src[i] != ':') {
 					throw std::runtime_error("attribute has no value");
@@ -111,7 +111,6 @@ namespace km {
 
 				auto& new_val = std::get<Object::obj_type>(obj.value);
 				_parse_dispatch(new_val[name], ++i);
-
 			}
 			_skip_ws(i);
 			
