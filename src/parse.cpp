@@ -167,7 +167,7 @@ void Json::_stringify_object(const Json::Object& obj, size_t depth)
 		}
 		output.push_back('\n');
 		output.insert(output.end(), depth - 1, '\t');
-		output.append("}\n");
+		output.append("}");
 	}
 
 	void Json::_stringify(const Json::Object& obj, size_t depth)

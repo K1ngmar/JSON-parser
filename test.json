@@ -1,4 +1,12 @@
 {
 	"small": "json",
-	"second": "param"
+	"second": {
+		"sub": "string",
+		"subsub": {
+			"woop": "woop",
+			"party": "parrot"
+		},
+		"another": "one",
+		"dj": "khaled"
+	}
 }
