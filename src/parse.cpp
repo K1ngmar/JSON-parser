@@ -86,8 +86,8 @@ namespace km {
 		switch(_src[i]) {
 			case '{':
 				return _parse_object(obj, ++i);
-			// case CASE_NBR:
-			// 	return _parse_nbr(obj, i);
+			case CASE_NBR:
+				return _parse_number(obj, i);
 			case '\"':
 				return _parse_string(obj, i);
 			default:
@@ -125,6 +125,15 @@ namespace km {
 					throw std::runtime_error(std::string("Uknown character found: `") + _src[i] + '`');
 			}
 		}
+	}
+
+	void Json::_parse_number(Json::Object& obj, size_t& i)
+	{
+		obj.value_type = Json::Object::valuetype::Number;
+		
+		obj.value = std::stoi(_src + i);
+		while (_src[i] == '+' || _src[i] == '-' || (_src[i] >= '0' && _src[i] <= '9'))
+			++i;
 	}
 
 	void Json::_parse_string(Json::Object& obj, size_t& i)
@@ -176,6 +185,10 @@ void Json::_stringify_object(const Json::Object& obj, size_t depth)
 		switch (obj.value_type) {
 			case Json::Object::valuetype::Object: {
 				_stringify_object(obj, depth + 1);
+				break ;
+			}
+			case Json::Object::valuetype::Number: {
+				output.append(std::to_string(std::get<int32_t>(obj.value)));
 				break ;
 			}
 			case Json::Object::valuetype::String: {

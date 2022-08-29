@@ -4,8 +4,10 @@
 		"sub": "string",
 		"subsub": {
 			"woop": "woop",
-			"party": "parrot"
+			"party": "parrot",
+			"negative": -42069
 		},
+		"number": 12345,
 		"another": "one",
 		"dj": "khaled"
 	},
