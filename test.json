@@ -1,5 +1,7 @@
 {
 	"small": "json",
+	"working": true,
+	"not working": false,
 	"array": [
 		"string",
 		{"nbr": 1337},

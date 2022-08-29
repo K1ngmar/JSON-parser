@@ -92,6 +92,10 @@ namespace km {
 				return _parse_number(obj, i);
 			case '\"':
 				return _parse_string(obj, i);
+			// true || false
+			case 't':
+			case 'f':
+				return _parse_bool(obj, i);
 			default:
 				throw std::runtime_error(std::string("Unsupported character found: `") + _src[i] + '`');
 		}
@@ -164,6 +168,24 @@ namespace km {
 		obj.value = _parse_name(i);
 		++i;
 	}
+	void Json::_parse_bool(Json::Object& obj, size_t& i)
+	{
+		obj.value_type = Json::Object::valuetype::Bool;
+
+		// 5 == len of false
+		if (i + 5 >= _len)
+			throw std::runtime_error("Unexpected end of file");
+
+		if (strncmp(_src + i, "true", 4) == 0) {
+			obj.value = true;
+			i += 4;
+		} else if (strncmp(_src + i, "false", 5) == 0) {
+			obj.value = false;
+			i += 5;
+		} else {
+			throw std::runtime_error("Invalid bool value");
+		}
+	}
 
 	// public
 	Json::Object& Json::parse()
@@ -179,46 +201,54 @@ namespace km {
 
 	void Json::_stringify_object(const Json::Object& obj, size_t depth)
 	{
-		output.append("{\n");
+		_output.append("{\n");
 		auto& values = std::get<Json::Object::obj_type>(obj.value);
 		auto itr = values.begin();
 		while (itr != values.end()) {
 			// set depth padding
-			output.insert(output.end(), depth, '\t');
+			_output.insert(_output.end(), depth, '\t');
 
 			// object name
-			output.append(itr->first);
-			output.append(": ");
+			_output.append(itr->first);
+			_output.append(": ");
 
 			// opbject
 			_stringify(itr->second, depth);
 			if (++itr == values.end()) {
-				output.push_back('\n');
+				_output.push_back('\n');
 				break ;
 			}
-			output.append(",\n");
+			_output.append(",\n");
 		}
-		output.insert(output.end(), depth - 1, '\t');
-		output.append("}");
+		_output.insert(_output.end(), depth - 1, '\t');
+		_output.append("}");
 	}
 
 	void Json::_stringify_array(const Json::Object& obj, size_t depth)
 	{
-		output.append("[\n");
+		_output.append("[\n");
 		const Object::arr_type& arr = std::get<Json::Object::arr_type>(obj.value);
 
 		for (size_t i = 0; i < arr.size(); ++i) {
 			// set padding
-			output.insert(output.end(), depth, '\t');
+			_output.insert(_output.end(), depth, '\t');
 
 			_stringify(arr[i], depth);
 
 			if (i + 1 < arr.size())
-				output.push_back(',');
-			output.push_back('\n');
+				_output.push_back(',');
+			_output.push_back('\n');
 		}
-		output.insert(output.end(), depth - 1, '\t');
-		output.append("]");
+		_output.insert(_output.end(), depth - 1, '\t');
+		_output.append("]");
+	}
+
+	void Json::_stringify_bool(const Json::Object& obj)
+	{
+		if (std::get<bool>(obj.value) == true)
+			_output.append("true");
+		else
+			_output.append("false");
 	}
 
 	void Json::_stringify(const Json::Object& obj, size_t depth)
@@ -233,11 +263,15 @@ namespace km {
 				break ;
 			}
 			case Json::Object::valuetype::Number: {
-				output.append(std::to_string(std::get<int32_t>(obj.value)));
+				_output.append(std::to_string(std::get<int32_t>(obj.value)));
 				break ;
 			}
 			case Json::Object::valuetype::String: {
-				output.append(std::get<std::string_view>(obj.value));
+				_output.append(std::get<std::string_view>(obj.value));
+				break ;
+			}
+			case Json::Object::valuetype::Bool: {
+				_stringify_bool(obj);
 				break ;
 			}
 			default:
@@ -247,11 +281,11 @@ namespace km {
 
 	const std::string& Json::stringify(const Json::Object& obj)
 	{
-		output.reserve(_len);
+		_output.reserve(_len);
 
 		_stringify(obj, 0);
 
-		return (output);
+		return (_output);
 	}
 
 } /* end of namespace */
