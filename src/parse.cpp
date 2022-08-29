@@ -152,6 +152,8 @@ namespace km {
 				break ;
 			++i;
 		}
+		if (_src[i] != ']')
+			throw std::runtime_error("missing closing `]`");
 		++i;
 	}
 
