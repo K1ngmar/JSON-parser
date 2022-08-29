@@ -2,6 +2,7 @@
 	"small": "json",
 	"working": true,
 	"not working": false,
+	"skill": null,
 	"array": [
 		"string",
 		{"nbr": 1337},

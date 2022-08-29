@@ -96,6 +96,9 @@ namespace km {
 			case 't':
 			case 'f':
 				return _parse_bool(obj, i);
+			// null
+			case 'n':
+				return _parse_null(obj, i);
 			default:
 				throw std::runtime_error(std::string("Unsupported character found: `") + _src[i] + '`');
 		}
@@ -187,6 +190,20 @@ namespace km {
 		}
 	}
 
+	void Json::_parse_null(Json::Object& obj, size_t& i)
+	{
+		obj.value_type = Json::Object::valuetype::Null;
+		
+		// 4 = len of null
+		if (i + 4 >= _len)
+			throw std::runtime_error("Unexpected end of file");
+		
+		if (strncmp(_src + i, "null", 4) != 0)
+			throw std::runtime_error("you probably made a typo in `null`");
+
+		i += 4;
+	}
+
 	// public
 	Json::Object& Json::parse()
 	{
@@ -272,6 +289,10 @@ namespace km {
 			}
 			case Json::Object::valuetype::Bool: {
 				_stringify_bool(obj);
+				break ;
+			}
+			case Json::Object::valuetype::Null: {
+				_output.append("null");
 				break ;
 			}
 			default:
