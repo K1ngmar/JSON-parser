@@ -95,10 +95,9 @@ namespace km {
 		}
 	}
 
-
 	void Json::_parse_object(Json::Object& obj, size_t& i)
 	{
-		_json_obj.value_type = Json::Object::valuetype::Object;
+		obj.value_type = Json::Object::valuetype::Object;
 
 		while (true) {
 			std::string_view name = _parse_name(i);
@@ -129,14 +128,14 @@ namespace km {
 
 	void Json::_parse_string(Json::Object& obj, size_t& i)
 	{
-		_json_obj.value_type = Json::Object::valuetype::String;
+		obj.value_type = Json::Object::valuetype::String;
 
 		obj.value = _parse_name(i);
 		++i;
 	}
 
 	// public
-	const Json::Object& Json::parse()
+	Json::Object& Json::parse()
 	{
 		size_t i = 0;
 		_parse_dispatch(_json_obj, i);
@@ -147,29 +146,6 @@ namespace km {
 // Stringify //
 ///////////////
 
-	// void Json::_stringify(const Json::Object& obj, size_t depth)
-	// {
-	// 	switch (obj.value_type) {
-	// 		case Json::Object::valuetype::Object: {
-	// 			output.append("{\n"); break ;
-	// 		}
-	// 		case Json::Object::valuetype::String: {
-	// 			output.append(std::get<std::string_view>(obj.value));
-	// 		}
-	// 		default:
-	// 			throw std::runtime_error("unknown object type");
-	// 	}
-	// 	for (size_t i = 0; i < depth; ++i)
-	// 		output.push_back('\t');
-	// }
-
-	// const std::string& Json::stringify(const Json::Object& obj)
-	// {
-	// 	output.reserve(_len);
-
-	// 	_stringify(obj, 0);
-
-	// 	return (output);
-	// }
+	
 
 } /* end of namespace */
