@@ -1,5 +1,10 @@
 {
 	"small": "json",
+	"array": [
+		"string",
+		{"nbr": 1337},
+		80085
+	],
 	"second": {
 		"sub": "string",
 		"subsub": {

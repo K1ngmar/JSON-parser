@@ -86,6 +86,8 @@ namespace km {
 		switch(_src[i]) {
 			case '{':
 				return _parse_object(obj, ++i);
+			case '[':
+				return _parse_array(obj, ++i);
 			case CASE_NBR:
 				return _parse_number(obj, i);
 			case '\"':
@@ -127,6 +129,25 @@ namespace km {
 		}
 	}
 
+	void Json::_parse_array(Json::Object& obj, size_t& i)
+	{
+		obj.value_type = Json::Object::valuetype::Array;
+
+		obj.value = Object::arr_type();
+		Object::arr_type& array = std::get<Object::arr_type>(obj.value);
+
+		while (i < _len) {
+			_skip_ws(i);
+			array.push_back(Object());
+			_parse_dispatch(array.back(), i);
+			if (_src[i] != ',')
+				break ;
+			++i;
+		}
+		_skip_ws(i);
+		++i;
+	}
+
 	void Json::_parse_number(Json::Object& obj, size_t& i)
 	{
 		obj.value_type = Json::Object::valuetype::Number;
@@ -156,7 +177,7 @@ namespace km {
 // Stringify //
 ///////////////
 
-void Json::_stringify_object(const Json::Object& obj, size_t depth)
+	void Json::_stringify_object(const Json::Object& obj, size_t depth)
 	{
 		output.append("{\n");
 		auto& values = std::get<Json::Object::obj_type>(obj.value);
@@ -180,11 +201,31 @@ void Json::_stringify_object(const Json::Object& obj, size_t depth)
 		output.append("}");
 	}
 
+	void Json::_stringify_array(const Json::Object& obj, size_t depth)
+	{
+		output.append("[\n");
+		const Object::arr_type& arr = std::get<Json::Object::arr_type>(obj.value);
+
+		for (size_t i = 0; i < arr.size(); ++i) {
+			output.insert(output.end(), depth, '\t');
+			_stringify(arr[i], depth);
+			if (i + 1 < arr.size())
+				output.push_back(',');
+			output.push_back('\n');
+		}
+		output.insert(output.end(), depth - 1, '\t');
+		output.append("]");
+	}
+
 	void Json::_stringify(const Json::Object& obj, size_t depth)
 	{
 		switch (obj.value_type) {
 			case Json::Object::valuetype::Object: {
 				_stringify_object(obj, depth + 1);
+				break ;
+			}
+			case Json::Object::valuetype::Array: {
+				_stringify_array(obj, depth + 1);
 				break ;
 			}
 			case Json::Object::valuetype::Number: {

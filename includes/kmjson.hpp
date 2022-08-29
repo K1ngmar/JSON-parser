@@ -107,6 +107,7 @@ namespace km {
 		void				_parse_dispatch(Object& obj, size_t& i);
 		void				_parse_object(Object& obj, size_t& i);
 		void				_parse_number(Object& obj, size_t& i);
+		void				_parse_array(Object& obj, size_t& i);
 		void				_parse_string(Object& obj, size_t& i);
 
 	public:
@@ -119,6 +120,7 @@ namespace km {
 	private:
 
 		void _stringify_object(const Object& obj, size_t depth);
+		void _stringify_array(const Object& obj, size_t depth);
 		void _stringify(const Object& obj, size_t depth);
 
 	public:
