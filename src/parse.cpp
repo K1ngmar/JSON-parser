@@ -192,11 +192,12 @@ namespace km {
 
 			// opbject
 			_stringify(itr->second, depth);
-			if (++itr == values.end())
+			if (++itr == values.end()) {
+				output.push_back('\n');
 				break ;
+			}
 			output.append(",\n");
 		}
-		output.push_back('\n');
 		output.insert(output.end(), depth - 1, '\t');
 		output.append("}");
 	}
@@ -207,8 +208,11 @@ namespace km {
 		const Object::arr_type& arr = std::get<Json::Object::arr_type>(obj.value);
 
 		for (size_t i = 0; i < arr.size(); ++i) {
+			// set padding
 			output.insert(output.end(), depth, '\t');
+
 			_stringify(arr[i], depth);
+
 			if (i + 1 < arr.size())
 				output.push_back(',');
 			output.push_back('\n');
