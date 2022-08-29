@@ -60,15 +60,15 @@ namespace km {
 	std::string_view Json::_parse_name(size_t& i)
 	{
 		_skip_ws(i);
-		if (i >= _len)
-			throw std::runtime_error("Object not complete");
-
-		size_t start_pos = i;
+		
 		if (_src[i] != '\"')
-			throw std::runtime_error("Invalid name format");
+			return std::string_view();
+		size_t start_pos = i;
 		++i;
 		while (i < _len && _src[i] != '\"')
 			++i;
+		if (_src[i] != '\"')
+			throw std::runtime_error("closing brace for string not found");
 		return std::string_view(&_src[start_pos], i - start_pos + 1);
 	}
 
@@ -76,13 +76,13 @@ namespace km {
 	{
 		while (i < _len && isspace(_src[i]) == true)
 			++i;
+		if (i >= _len)
+			throw std::runtime_error("Unexpected end of file");
 	}
 
 	void Json::_parse_dispatch(Json::Object& obj, size_t& i)
 	{
 		_skip_ws(i);
-		if (i >= _len)
-			throw std::runtime_error("Unexpected end of file");
 		switch(_src[i]) {
 			case '{':
 				return _parse_object(obj, ++i);
@@ -103,15 +103,17 @@ namespace km {
 			std::string_view name = _parse_name(i);
 			_skip_ws(++i);
 
-			if (i >= _len || _src[i] != ':')
-				throw std::runtime_error("attribute has no value");
+			if (name.size() > 0) {
 
-			auto& new_val = std::get<Object::obj_type>(obj.value);
-			_parse_dispatch(new_val[name], ++i);
+				if (_src[i] != ':') {
+					throw std::runtime_error("attribute has no value");
+				}
 
+				auto& new_val = std::get<Object::obj_type>(obj.value);
+				_parse_dispatch(new_val[name], ++i);
+
+			}
 			_skip_ws(i);
-			if (i >= _len)
-				throw std::runtime_error("attribute has no value");
 			
 			switch(_src[i]) {
 				case ',':
