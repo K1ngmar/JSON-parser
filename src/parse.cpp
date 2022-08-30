@@ -164,13 +164,22 @@ namespace km {
 	}
 
 	void Json::_parse_number(Json::Object* obj, size_t& i)
-	{
-		obj->value_type = Json::Object::valuetype::Number;
-		
-		obj->value = std::stoi(_src + i);
-		while (_src[i] == '+' || _src[i] == '-' || (_src[i] >= '0' && _src[i] <= '9'))
-			++i;
-	}
+    {
+        obj->value_type = Json::Object::valuetype::Number;
+        
+        int64_t res = 0;
+        int64_t sgn = 1;
+
+        if (_src[i] == '-')
+            sgn = -1;
+        if (i < _len && (_src[i] == '+' || _src[i] == '-'))
+            ++i;
+        while (i < _len && _src[i] >= '0' && _src[i] <= '9') {
+            res = res * 10 + _src[i] - '0';
+            ++i;
+        }
+        obj->value = int32_t(sgn * res);
+    }
 
 	void Json::_parse_string(Json::Object* obj, size_t& i)
 	{
