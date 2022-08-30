@@ -135,8 +135,6 @@ namespace km {
 					++i;
 					return ;
 				default:
-					std::cerr << "i = " << i << std::endl;
-					std::cerr << std::string_view(_src + i - 50, 100) << std::endl;
 					throw std::runtime_error(std::string("Unknown character found: `") + _src[i] + '`');
 			}
 		}
