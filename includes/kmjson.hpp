@@ -46,8 +46,8 @@ namespace km {
 		//////////////
 		public:
 
-			typedef std::unordered_map<std::string_view, Object>				obj_type;
-			typedef std::vector<Object>											arr_type;
+			typedef std::unordered_map<std::string_view, Object*>				obj_type;
+			typedef std::vector<Object*>										arr_type;
 			typedef std::string_view											str_type;
 			typedef std::variant<obj_type, arr_type, int32_t, str_type, bool>	val;
 
@@ -104,13 +104,13 @@ namespace km {
 
 		std::string_view	_parse_name(size_t& i);
 		void				_skip_ws(size_t& i);
-		void				_parse_dispatch(Object& obj, size_t& i);
-		void				_parse_object(Object& obj, size_t& i);
-		void				_parse_array(Object& obj, size_t& i);
-		void				_parse_number(Object& obj, size_t& i);
-		void				_parse_string(Object& obj, size_t& i);
-		void				_parse_bool(Object& obj, size_t& i);
-		void				_parse_null(Object& obj, size_t& i);
+		void				_parse_dispatch(Object* obj, size_t& i);
+		void				_parse_object(Object* obj, size_t& i);
+		void				_parse_array(Object* obj, size_t& i);
+		void				_parse_number(Object* obj, size_t& i);
+		void				_parse_string(Object* obj, size_t& i);
+		void				_parse_bool(Object* obj, size_t& i);
+		void				_parse_null(Object* obj, size_t& i);
 
 	public:
 
@@ -121,10 +121,10 @@ namespace km {
 	///////////////
 	private:
 
-		void _stringify_object(const Object& obj, size_t depth);
-		void _stringify_array(const Object& obj, size_t depth);
-		void _stringify_bool(const Object& obj);
-		void _stringify(const Object& obj, size_t depth);
+		void _stringify_object(const Object* obj, size_t depth);
+		void _stringify_array(const Object* obj, size_t depth);
+		void _stringify_bool(const Object* obj);
+		void _stringify(const Object* obj, size_t depth);
 
 	public:
 
