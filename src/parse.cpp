@@ -57,6 +57,16 @@ namespace km {
 
 // Parsing
 
+	inline bool Json::_is_valid(char c, size_t i)
+	{
+		if (_src[i] != c)
+			return (false);
+		int valid = true;
+		while (_src[--i] == '\\')
+			valid = !valid;
+		return (valid);
+	}
+
 	std::string_view Json::_parse_name(size_t& i)
 	{
 		_skip_ws(i);
@@ -65,7 +75,7 @@ namespace km {
 			return std::string_view();
 		size_t start_pos = i;
 		++i;
-		while (i < _len && _src[i] != '"') {
+		while (i < _len && _is_valid('"', i) == false) {
 			++i;
 		}
 		if (_src[i] != '\"')

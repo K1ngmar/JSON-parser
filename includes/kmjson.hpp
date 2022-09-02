@@ -104,6 +104,7 @@ namespace km {
 
 		std::string_view	_parse_name(size_t& i);
 		void				_skip_ws(size_t& i);
+		inline bool			_is_valid(char c, size_t i);
 		void				_parse_dispatch(Object* obj, size_t& i);
 		void				_parse_object(Object* obj, size_t& i);
 		void				_parse_array(Object* obj, size_t& i);
