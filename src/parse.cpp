@@ -57,25 +57,28 @@ namespace km {
 
 // Parsing
 
-	inline bool Json::_is_valid(char c, size_t i)
+	inline bool Json::_is_valid(char c)
 	{
+
 		if (_src[i] != c)
 			return (false);
+
+		size_t j = i;
 		int valid = true;
-		while (_src[--i] == '\\')
+		while (_src[--j] == '\\')
 			valid = !valid;
 		return (valid);
 	}
 
-	std::string_view Json::_parse_name(size_t& i)
+	std::string_view Json::_parse_name()
 	{
-		_skip_ws(i);
+		_skip_ws();
 		
 		if (_src[i] != '\"')
 			return std::string_view();
 		size_t start_pos = i;
 		++i;
-		while (i < _len && _is_valid('"', i) == false) {
+		while (i < _len && _is_valid('"') == false) {
 			++i;
 		}
 		if (_src[i] != '\"')
@@ -83,7 +86,7 @@ namespace km {
 		return std::string_view(&_src[start_pos], i - start_pos + 1);
 	}
 
-	void Json::_skip_ws(size_t& i)
+	void Json::_skip_ws()
 	{
 		while (i < _len && isspace(_src[i]) == true)
 			++i;
@@ -91,39 +94,44 @@ namespace km {
 			throw std::runtime_error("Unexpected end of file");
 	}
 
-	void Json::_parse_dispatch(Json::Object* obj, size_t& i)
+	void Json::_parse_dispatch(Json::Object* obj)
 	{
-		_skip_ws(i);
+		_skip_ws();
 		switch(_src[i]) {
-			case '{':
-				return _parse_object(obj, ++i);
-			case '[':
-				return _parse_array(obj, ++i);
+			case '{': {
+				++i;
+				return _parse_object(obj);
+			}
+			case '[': {
+				++i;
+				return _parse_array(obj);
+			}
 			case CASE_NBR:
-				return _parse_number(obj, i);
+				return _parse_number(obj);
 			case '\"':
-				return _parse_string(obj, i);
+				return _parse_string(obj);
 			// true || false
 			case 't':
 			case 'f':
-				return _parse_bool(obj, i);
+				return _parse_bool(obj);
 			// null
 			case 'n':
-				return _parse_null(obj, i);
+				return _parse_null(obj);
 			default:
 				throw std::runtime_error(std::string("Unsupported character found: `") + _src[i] + '`');
 		}
 	}
 
-	void Json::_parse_object(Json::Object* obj, size_t& i)
+	void Json::_parse_object(Json::Object* obj)
 	{
 		obj->value_type = Json::Object::valuetype::Object;
 
 		while (true) {
-			std::string_view name = _parse_name(i);
+			std::string_view name = _parse_name();
 
 			if (name.size() > 0) {
-				_skip_ws(++i);
+				++i;
+				_skip_ws();
 
 				if (_src[i] != ':') {
 					throw std::runtime_error("attribute has no value");
@@ -133,9 +141,10 @@ namespace km {
 				Json::Object* new_obj = new Object(); 
 				new_val[name] = new_obj;
 
-				_parse_dispatch(new_obj, ++i);
+				++i;
+				_parse_dispatch(new_obj);
 			}
-			_skip_ws(i);
+			_skip_ws();
 			
 			switch(_src[i]) {
 				case ',':
@@ -150,18 +159,18 @@ namespace km {
 		}
 	}
 
-	void Json::_parse_array(Json::Object* obj, size_t& i)
+	void Json::_parse_array(Json::Object* obj)
 	{
 		obj->value_type = Json::Object::valuetype::Array;
 
 		obj->value = Object::arr_type();
 		Object::arr_type& array = std::get<Object::arr_type>(obj->value);
 
-		_skip_ws(i);
+		_skip_ws();
 		while (i < _len && _src[i] != ']') {
 			array.push_back(new Object());
-			_parse_dispatch(array.back(), i);
-			_skip_ws(i);
+			_parse_dispatch(array.back());
+			_skip_ws();
 			if (_src[i] != ',')
 				break ;
 			++i;
@@ -171,7 +180,7 @@ namespace km {
 		++i;
 	}
 
-	void Json::_parse_number(Json::Object* obj, size_t& i)
+	void Json::_parse_number(Json::Object* obj)
     {
         obj->value_type = Json::Object::valuetype::Number;
         
@@ -189,14 +198,14 @@ namespace km {
         obj->value = int32_t(sgn * res);
     }
 
-	void Json::_parse_string(Json::Object* obj, size_t& i)
+	void Json::_parse_string(Json::Object* obj)
 	{
 		obj->value_type = Json::Object::valuetype::String;
 
-		obj->value = _parse_name(i);
+		obj->value = _parse_name();
 		++i;
 	}
-	void Json::_parse_bool(Json::Object* obj, size_t& i)
+	void Json::_parse_bool(Json::Object* obj)
 	{
 		obj->value_type = Json::Object::valuetype::Bool;
 
@@ -215,7 +224,7 @@ namespace km {
 		}
 	}
 
-	void Json::_parse_null(Json::Object* obj, size_t& i)
+	void Json::_parse_null(Json::Object* obj)
 	{
 		obj->value_type = Json::Object::valuetype::Null;
 		
@@ -232,8 +241,8 @@ namespace km {
 	// public
 	Json::Object& Json::parse()
 	{
-		size_t i = 0;
-		_parse_dispatch(&_json_obj, i);
+		i = 0;
+		_parse_dispatch(&_json_obj);
 		return (_json_obj);
 	}
 
