@@ -1,0 +1,18 @@
+{
+	"small": "json",
+	"working": true,
+	"not working": false,
+	"skill": null,
+	"array": [
+		"string",
+		{"nbr": 1337},
+		80085
+	],
+	"second": {
+		"sub": "string",
+		"subsub": {
+			"woop": "woop",
+			"party": "parrot",
+			"negative": -42069
+		},
+		"number": 123

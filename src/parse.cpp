@@ -90,7 +90,7 @@ namespace km {
 	{
 		while (i < _len && isspace(_src[i]) == true)
 			++i;
-		if (i >= _len)
+		if (i > _len)
 			throw std::runtime_error("Unexpected end of file");
 	}
 
@@ -242,6 +242,9 @@ namespace km {
 	{
 		i = 0;
 		_parse_dispatch(_json_obj);
+		_skip_ws();
+		if (i < _len)
+			throw std::runtime_error("invalid end of file");
 		return (_json_obj);
 	}
 
